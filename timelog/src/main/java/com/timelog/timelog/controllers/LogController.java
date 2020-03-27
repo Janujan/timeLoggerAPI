@@ -27,10 +27,11 @@ public class LogController {
 
 
     @ResponseStatus(value = HttpStatus.OK, reason = "")
-    @RequestMapping(value="/logs/submit", method=RequestMethod.POST)
-    public HashMap<String,String> submitLog(@RequestBody Log submitData){
+    @RequestMapping(value="/logs/submit/{userId}", method=RequestMethod.POST)
+    public HashMap<String,String> submitLog(@RequestBody Log submitData, @PathVariable long userId){
         HashMap<String, String> response = new HashMap<String,String>();
         try{
+            submitData.setUser(userId);
             logRepository.save(submitData);
         }
         catch(ConstraintViolationException e){
@@ -41,23 +42,24 @@ public class LogController {
     }
 
     @ResponseStatus(value = HttpStatus.OK, reason = "")
-    @RequestMapping(value="/logs/{logid}", method=RequestMethod.GET)
-    public Optional<Log> getLogbyID(@PathVariable long logid){
-        return logRepository.findById(logid);
+    @RequestMapping(value="/logs/{userId}/{logid}", method=RequestMethod.GET)
+    public Iterable<Log> getLogbyID(@PathVariable long userId, @PathVariable long logid){
+        //return logRepository.findAllLogsByUserid(userId);
+        return logRepository.findByIdAndUserid(logid, userId);
     }
 
     @ResponseStatus(value = HttpStatus.OK, reason = "")
-    @RequestMapping(value="/logs", method=RequestMethod.GET)
-    public Iterable<Log> getLogs(){
-        return logRepository.findAll();
+    @RequestMapping(value="/logs/{userId}", method=RequestMethod.GET)
+    public Iterable<Log> getLogs(@PathVariable long userId){
+        return logRepository.findAllLogsByUserid(userId);
 
     }
 
-    @RequestMapping(value="/logs/{logid}", method=RequestMethod.POST)
-    public HashMap<String, String> updateLogById(@PathVariable long logid, @RequestBody Log updateData){
+    @RequestMapping(value="/logs/{userId}/{logId}", method=RequestMethod.POST)
+    public HashMap<String, String> updateLogById(@PathVariable long userId, @PathVariable long logId, @RequestBody Log updateData){
         HashMap<String,String> response =  new HashMap<String, String>();
         //logic is to find the id, then replace with new data
-        Optional<Log> oldData = logRepository.findById(logid);
+        Optional<Log> oldData = logRepository.findById(logId);
         if(oldData == null){
             response.put("error", "log id doesnt exist");
         }
@@ -78,7 +80,7 @@ public class LogController {
 
     //this uses the find first and then delete approach
     @RequestMapping(value="/logs/delete/{logid}", method=RequestMethod.POST)
-    public HashMap<String, String> deleteLogbyID(@PathVariable long logid, @RequestBody Log logData){
+    public HashMap<String, String> deleteLogbyID(@PathVariable long logid, @RequestBody long userid){
         HashMap<String,String> response = new HashMap<String, String>();
 
         Optional<Log> result = logRepository.findById(logid);

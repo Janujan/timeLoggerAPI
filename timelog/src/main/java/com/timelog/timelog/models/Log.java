@@ -29,6 +29,9 @@ public class Log{
     @Column
     private String description;
 
+    @Column
+    private long userid;
+
     public void setid(long id){
         this.id = id;
     }
@@ -67,6 +70,13 @@ public class Log{
         this.description = desc;
     }
 
+    public Long getUser(){
+        return this.userid;
+    }
+
+    public void setUser(Long userId) {
+        this.userid = userId;
+    }
     
     //equality operator between two logs
     public boolean equals(Log compare){
