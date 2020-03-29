@@ -1,9 +1,9 @@
 package com.timelog.timelog.models;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface LogRepository extends CrudRepository<Log, Long> {
+public interface LogRepository extends JpaRepository<Log, Long> {
 
 }

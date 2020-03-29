@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -28,6 +30,10 @@ public class Log{
     @NotNull
     @Column
     private String description;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName="id", name="user")
+    private User user;
 
     public void setid(long id){
         this.id = id;
@@ -67,7 +73,24 @@ public class Log{
         this.description = desc;
     }
 
+    public User getUser(){
+        return this.user;
+    }
+
+    public void setUser(User user){
+        this.user = user;
+    }
     
+    @Override
+    public String toString(){
+        String str = "Log Data: \n";
+        str+= " Task: " + this.task + "\n";
+        str+= " Description: " + this.description + "\n";
+        str+= " Tag: " + this.tag + "\n";
+        str+= " User: " + this.user.getUsername() + "\n";
+        return str;
+    }
+
     //equality operator between two logs
     public boolean equals(Log compare){
         boolean result = true;
