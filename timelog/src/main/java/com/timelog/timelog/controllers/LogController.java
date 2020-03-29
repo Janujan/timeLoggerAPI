@@ -84,18 +84,20 @@ public class LogController {
         final HashMap<String,String> response =  new HashMap<String, String>();
         //logic is to find the id, then replace with new data
 
+        //Find USer
         final User qUser = userRepository.findByUsername(username);
         if(qUser ==  null){
             response.put("error", "user doesnt exist, please register first");
             return response;
         }
 
-
+        //Find logs by the user if found
         final Log oldData = logRepository.findLogByUser(qUser.getId(), logid);
         if(oldData == null){
             response.put("error", "log id doesnt exist");
         }
         else{
+
             //check if new data provided
             if(!updateData.equals(oldData)){
 
@@ -113,12 +115,18 @@ public class LogController {
     }
 
     //this uses the find first and then delete approach
-    @RequestMapping(value="/logs/delete/{logid}", method=RequestMethod.POST)
-    public HashMap<String, String> deleteLogbyID(@PathVariable final long logid, @RequestBody final Log logData){
+    @RequestMapping(value="/logs/delete/{username}/{logid}", method=RequestMethod.DELETE)
+    public HashMap<String, String> deleteLogbyID(@PathVariable final String username, @PathVariable final long logid){
         final HashMap<String,String> response = new HashMap<String, String>();
 
-        final Optional<Log> result = logRepository.findById(logid);
-        if(result.orElse(null) == null){
+        final User qUser = userRepository.findByUsername(username);
+        if(qUser ==  null){
+            response.put("error", "user doesnt exist, please register first");
+            return response;
+        }
+
+        final Log result = logRepository.findLogByUser(qUser.getId(), logid);
+        if(result == null){
             response.put("nothing changed", "log id doesnt exist");
         }
         else{

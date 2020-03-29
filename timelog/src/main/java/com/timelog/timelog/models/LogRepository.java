@@ -13,6 +13,6 @@ public interface LogRepository extends JpaRepository<Log, Long> {
     List<Log> findAllLogsByUser( long userid );
 
 
-    @Query(value="SELECT l from log l where l.user = ?1 and l.id = ?2", nativeQuery = true)
+    @Query(value="SELECT * from log l where l.user = ?1 and l.id = ?2", nativeQuery = true)
     Log findLogByUser(long userid, long logid);
 }
