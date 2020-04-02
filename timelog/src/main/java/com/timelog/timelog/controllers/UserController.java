@@ -68,7 +68,6 @@ public class UserController{
         }
 
     }
-    
     @RequestMapping(value="/authenticate", method=RequestMethod.POST)
     public ResponseEntity<?> authenticate(@RequestBody UserCredentials userCred) throws Exception{
         try{
