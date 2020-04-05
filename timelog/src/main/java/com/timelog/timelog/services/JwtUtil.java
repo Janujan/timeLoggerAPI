@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
@@ -22,7 +23,13 @@ public class JwtUtil{
 
     //get the username fromt he JWT token passed in
     public String extractUsername(String token){
-        return extractClaim(token, Claims::getSubject);
+        try{
+            return extractClaim(token, Claims::getSubject);
+        }
+        catch(ExpiredJwtException e){
+            System.out.println("ERROR: JWT expired,  " + e.getMessage());
+            return null;
+        }
     }
    //find out how to get the stored token reference
     public Date extractExpiration(String token) {

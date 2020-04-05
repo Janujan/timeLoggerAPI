@@ -43,6 +43,8 @@ public class JWTFilter extends OncePerRequestFilter {
 
         //get username from token and validate token
         if(token != null){
+
+            // if token is invalid, the username returns as null and system logs expired token
             username = jwtUtil.extractUsername(token);
 
             //check if username exists and also check if the securitycontext is already autheniticated
