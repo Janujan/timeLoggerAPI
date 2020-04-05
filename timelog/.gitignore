@@ -31,3 +31,5 @@ build/
 .vscode/
 src/main/resources/application.properties
 src/main/java/com/timelog/timelog/services/SecurityConstants.java
+
+*.DS_Store
