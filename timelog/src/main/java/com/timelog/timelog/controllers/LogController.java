@@ -101,7 +101,7 @@ public class LogController {
     }
 
     //this uses the find first and then delete approach
-    @RequestMapping(value="/logs/delete/{logid}", method=RequestMethod.DELETE)
+    @RequestMapping(value="/logs/{logid}", method=RequestMethod.DELETE)
     public ResponseEntity<?> deleteLogbyID(Principal principal, @PathVariable final long logid){
 
         final User qUser = userRepository.findByUsername(principal.getName());
