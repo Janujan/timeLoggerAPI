@@ -1,5 +1,9 @@
 package com.timelog.timelog.models;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +11,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -32,6 +37,11 @@ public class Log{
     @NotNull
     @Column
     private String description;
+
+
+    @Column
+    private LocalDateTime timestamp;
+
 
     @JsonIgnore
     @ManyToOne
@@ -84,6 +94,22 @@ public class Log{
         this.user = user;
     }
     
+    // example of timestamp passed in 2017-01-01 00:08:57.231
+    public void setTimestamp(String timestamp) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss.SSS");
+        try{
+            this.timestamp = LocalDateTime.parse(timestamp, formatter);
+        }
+        catch(DateTimeParseException e){
+            this.timestamp = null;
+            System.out.println("invalid timestamp provided: " + e.getMessage());
+        }
+    }
+
+    public LocalDateTime getTimestamp(){
+        return this.timestamp;
+    }
+
     @Override
     public String toString(){
         String str = "Log Data: \n";
@@ -91,6 +117,7 @@ public class Log{
         str+= " Description: " + this.description + "\n";
         str+= " Tag: " + this.tag + "\n";
         str+= " User: " + this.user.getUsername() + "\n";
+        str+= " Timestamp: " + this.getTimestamp().toString();
         return str;
     }
 
@@ -107,16 +134,29 @@ public class Log{
             result = false;
         }
 
-        //tag can be null
-        if(this.tag == null){
-            if(compare.tag != null){
-                result = false;
-            }
-        }
-        else{
+        //tag can be null, so if they are both null, dont compare
+        if(this.tag != null && compare.tag != null){
             if(!this.tag.equals(compare.tag)){
                 result = false;
             }
+        }
+        else if(this.tag == null && compare.tag != null){
+            result = false;
+        }
+        else if(this.tag != null && compare.tag ==null){
+            result = false;
+        }
+
+        if(this.timestamp != null && compare.timestamp != null){
+            // System.out.println("old time: " +  this.timestamp.toString());
+            // System.out.println("new time: " + compare.timestamp.toString());
+            if(!this.timestamp.equals(compare.timestamp)){
+                result = false;
+                System.out.println("timestamps not equal");
+            }
+        }
+        else{
+            result = false;
         }
         return result;
     }

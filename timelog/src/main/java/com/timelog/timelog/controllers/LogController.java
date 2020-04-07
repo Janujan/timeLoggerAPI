@@ -94,6 +94,12 @@ public class LogController {
                 updateData.setid(oldData.getid());
                 updateData.setUser(qUser);
                 logRepository.save(updateData);
+                System.out.println("Updated log");
+                System.out.println(updateData.toString());
+            }
+            else{
+                System.out.println("Log not updated");
+                return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);   
             }
 
         }
