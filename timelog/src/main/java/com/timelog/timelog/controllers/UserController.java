@@ -15,6 +15,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -34,6 +35,9 @@ public class UserController{
 
     @Autowired
     JwtUtil jwt;
+
+    @Autowired
+    BCryptPasswordEncoder encoder;
 
     @RequestMapping(value="/register/user", method=RequestMethod.POST)
     public HashMap<String, String> registerUser(@RequestBody User user){   
@@ -59,6 +63,9 @@ public class UserController{
         }
 
         if(uniqueEmail == true && uniqueUserName == true){
+
+            //rehash the passowrd
+            user.setPassword(encoder.encode(user.getPassword()));
             userRepository.save(user);
             response.put("id", Long.toString(user.getId()));
             return response;

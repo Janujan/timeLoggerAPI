@@ -8,11 +8,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
-
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name="users")
+@Component
 public class User {
 
     @Id
@@ -30,14 +30,6 @@ public class User {
     @NotNull
     @Column
     private String password;
-
-    // public User(@JsonProperty("email") String email, 
-    //             @JsonProperty("username") String username, 
-    //             @JsonProperty("password") String password) {
-    //     this.email = email;
-    //     this.username = username;
-    //     this.password = new BCryptPasswordEncoder().encode(password);
-    // }
 
     public long getId(){
         return this.id;
@@ -67,8 +59,8 @@ public class User {
     }
 
     public void setPassword(String password){
-        // this.password = password;
-        this.password = new BCryptPasswordEncoder().encode(password);
+
+        this.password = password;
 
     }
 }
