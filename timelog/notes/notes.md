@@ -79,7 +79,7 @@ Controllers define the different routes that exist in the application and the lo
 
 Services are utility classes that perform common functions on models (in my case) that help with interacting with the data stored. In this project, I created a UserDetailsService, that gets passed along to Spring Security to handle authentication. The actual service links the UserRepostiory and exposes the username and password fields to be compared in the actual authentication. Another service was the JWTUtility class. This contains all the functionality needed to work with JWT (like generating/validating tokens)
 
-### tO Do:
+### TO DO:
 - add where to go to do things like:
     - change log class/user class
     - add functionality to repositories
@@ -190,3 +190,67 @@ To create the signature part you have to take the encoded header, the encoded pa
 Good Links:
 https://jwt.io/introduction/
 
+## Challenges
+
+## Sql database
+Data model design for scabability. I have two main entities that interact in the application: Logs and Users. The logical relationship between the entities is that for a given User there are many logs. OneToMany works from the User side. There are three different ways I could have captured this relationships.
+
+- User class has a @OneToMany annotation with a list of Logs
+- Logs class has a @ManyToOne annotation with a user
+- Link both with annotations.
+
+The best option to scale hundreds of logs for a given user is to use @ManyTonOne at the user side because:
+- you avoid the join_table that JPA generates 
+- you can only isolate and extract logs by user without having to load them all at once. 
+
+
+### Authentication/Authorization
+Deciding best authorization/authentication model for user access. I wanted to leverage the api for front-end calls on mobile and web. I also wanted a high level of security.
+
+- Basic Authentication
+- OAuth
+
+I went with OAuth because i limit the amount of times the user has to provide their credentials. I also dont need to keep track of sessions for logging in and out.
+
+- I still need to find a way to refresh tokens when they expire.
+
+
+### Routing
+
+What was the most logical way to route the endpoints that end-users will use. I wanted to create a routing system that followed the user story from getting authorized to manipulating data. 
+
+I also wanted to limit the data passed in via the url parameters because it there are analytics companies that can capture full urls and hence any sensitive information passed as parameters.
+
+In the end I chose: logs/ and /users for each of the major entities. 
+
+I also had all the sensitive information captured either as a token or in the json payload.
+
+https://www.fullcontact.com/blog/2016/04/29/never-put-secrets-urls-query-parameters/
+
+### Hosting/Deployment
+
+fill this out later.
+
+## Developer Guide
+
+So I wanted to capture a rough guide in how to develop for this project. I will basically cover where to go if I wanted to make certain changes.
+
+### Changing  models:
+Navigate to /timelog/src/main/java/com/timelog/timelog/models/
+
+Find the class for the model that needs changes.
+
+If you want to create a new model, just name it according to Java conventions and also create a corresponding repository for it. 
+
+#### Note: Repositories are Hibernate features that allow for automatic CRUD operations for a given SQL Database entitiy. 
+
+
+
+### Changing controller logic:
+If you want to create a new route, you would navigate to timelog/src/main/java/com/timelog/timelog/controllers/
+
+The LogController class deals with all routes related to Log activities. 
+
+The UserController class deals with all routes for Users.
+
+The Controller is for generic responses like lost endpoints and such. 
